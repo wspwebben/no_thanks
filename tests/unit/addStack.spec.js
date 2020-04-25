@@ -1,4 +1,4 @@
-import pushCard from '@/logic/pushCard'
+import addStack from '@/logic/addStack'
 
 describe('adding cards', () => {
   it('should add separate card from left edge', () => {
@@ -12,7 +12,7 @@ describe('adding cards', () => {
       [3, 6]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should add separate card from right edge', () => {
@@ -26,7 +26,7 @@ describe('adding cards', () => {
       [9, 9]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should add separate card between intervals', () => {
@@ -42,7 +42,7 @@ describe('adding cards', () => {
       [12, 13]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should add card to interval from left', () => {
@@ -55,7 +55,7 @@ describe('adding cards', () => {
       [2, 6]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should add card to interval from right', () => {
@@ -68,7 +68,7 @@ describe('adding cards', () => {
       [3, 7]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should add card and merge', () => {
@@ -82,7 +82,7 @@ describe('adding cards', () => {
       [3, 10]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should not merge if next interval is not connected', () => {
@@ -97,7 +97,7 @@ describe('adding cards', () => {
       [9, 10]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('should not merge if current interval is the last one', () => {
@@ -112,7 +112,7 @@ describe('adding cards', () => {
       [9, 11]
     ]
 
-    expect(pushCard(number, source)).toEqual(result)
+    expect(addStack(number, source)).toEqual(result)
   })
 
   it('works with multiple intervals', () => {
@@ -137,8 +137,8 @@ describe('adding cards', () => {
       [13, 16]
     ]
 
-    expect(pushCard(number1, source)).toEqual(result1)
-    expect(pushCard(number2, source)).toEqual(result2)
+    expect(addStack(number1, source)).toEqual(result1)
+    expect(addStack(number2, source)).toEqual(result2)
   })
 
   it('doesnt mutate source data', () => {
@@ -149,7 +149,7 @@ describe('adding cards', () => {
     const number = 2
     const copy = [...source]
 
-    pushCard(number, source)
+    addStack(number, source)
     expect(source).toEqual(copy)
   })
 })
