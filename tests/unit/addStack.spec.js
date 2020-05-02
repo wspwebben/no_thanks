@@ -1,6 +1,17 @@
 import addStack from '@/logic/addStack'
 
 describe('adding cards', () => {
+  it('should add card to empty stack', () => {
+    const source = []
+
+    const number = 1
+    const result = [
+      [1, 1]
+    ]
+
+    expect(addStack(number, source)).toEqual(result)
+  })
+
   it('should add separate card from left edge', () => {
     const source = [
       [3, 6]
