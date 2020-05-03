@@ -7,3 +7,5 @@ export const MAX_PLAYERS = 7
 export const REMOVED_CARDS = 9
 export const MIN_VALUE = 3
 export const MAX_VALUE = 35
+
+export const REFUSE_COST = 1
