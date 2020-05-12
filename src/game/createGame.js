@@ -18,8 +18,6 @@ export default function * createGame (playersData) {
     players
   }
 
-  debugger
-
   while (deck.length) {
     const currentCard = deck.pop()
 
