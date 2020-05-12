@@ -1,7 +1,7 @@
-import { MIN_PLAYERS, MAX_PLAYERS } from '@/logic/consts'
+import { MIN_PLAYERS, MAX_PLAYERS } from './consts'
 
-import getMoneyCount from '@/logic/getMoneyCount'
-import createIdGenerator from '@/logic/createIdGenerator'
+import getMoneyCount from './getMoneyCount'
+import createIdGenerator from './createIdGenerator'
 
 export default function createPlayers (playersData) {
   if (playersData.length < MIN_PLAYERS) {

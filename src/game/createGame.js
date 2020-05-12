@@ -1,10 +1,10 @@
-import createDeck from '@/logic/createDeck'
-import createPlayers from '@/logic/createPlayers'
-import getNextPlayerId from '@/logic/getNextPlayerId'
-import addStack from '@/logic/addStack'
-import getStackScore from '@/logic/getStackScore'
+import createDeck from './createDeck'
+import createPlayers from './createPlayers'
+import getNextPlayerId from './getNextPlayerId'
+import addStack from './addStack'
+import getStackScore from './getStackScore'
 
-import { REFUSE_COST } from '@/logic/consts'
+import { REFUSE_COST } from './consts'
 
 export default function * createGame (playersData) {
   const deck = createDeck()
