@@ -11,7 +11,9 @@ const playersData = [
   },
   { 
     name: 'Carl'
-}];
+  },
+];
+
 const game = createGame(playersData)
 let isPlaying = true;
 
