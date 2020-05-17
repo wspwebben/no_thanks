@@ -1,5 +1,7 @@
 import { MIN_PLAYERS, MAX_PLAYERS } from './consts'
 
+import Player from './entities/Player';
+
 import getMoneyCount from './getMoneyCount'
 import createIdGenerator from './createIdGenerator'
 
@@ -12,22 +14,12 @@ export default function createPlayers (playersData) {
     throw new Error('There\'s too much playerys')
   }
 
-  const players = {}
-  const playersId = []
   const idGenerator = createIdGenerator()
   const startingMoney = getMoneyCount(playersData.length)
 
-  for (const { name } of playersData) {
-    const { value: id } = idGenerator.next()
 
-    playersId.push(id)
-    players[id] = {
-      id,
-      name,
-      money: startingMoney,
-      stack: []
-    }
-  }
-
-  return [players, playersId]
+  return playersData.map(({ name }) => {
+    const { value: id } = idGenerator.next();
+    return new Player(name, id, startingMoney);
+  });
 }

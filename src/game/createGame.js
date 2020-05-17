@@ -1,68 +1,67 @@
-import createDeck from './createDeck'
-import createPlayers from './createPlayers'
-import getNextPlayerId from './getNextPlayerId'
-import addStack from './addStack'
-import getStackScore from './getStackScore'
+import { MIN_VALUE, MAX_VALUE, REMOVED_CARDS, INITIAL_BANK, MOVE_DECLINE, MOVE_TAKE } from './consts';
 
-import { REFUSE_COST } from './consts'
+import createDeck from './createDeck';
+import createPlayers from './createPlayers';
+import createNextPlayer from './createNextPlayer';
 
 export default function * createGame (playersData) {
-  const deck = createDeck()
-  const [players, playersId] = createPlayers(playersData)
-  const getNextPlayer = getNextPlayerId(playersId)
+  const deck = createDeck(MIN_VALUE, MAX_VALUE, REMOVED_CARDS)
+  const players = createPlayers(playersData);
+  const getNextPlayer = createNextPlayer(players);
+  const getPublicPlayers = () => players.map(player => player.publicInfo);
 
-  let currentPlayerId = playersId[0]
-  let moneyStack = 0
+  let [currentPlayer] = players;
+  let bank = INITIAL_BANK;
+
 
   yield {
-    players
+    players: getPublicPlayers(),
   }
 
   while (deck.length) {
-    const currentCard = deck.pop()
+    const card = deck.pop()
 
-    let canTake = true
+    let isCardFree = true
 
-    while (canTake) {
-      const isTaken = yield {
-        currentCard,
-        players,
-        currentPlayerId,
-        moneyStack
+    while (isCardFree) {
+      const move = yield {
+        card,
+        bank,
+        currentPlayer: currentPlayer.id,
+        players: getPublicPlayers(),
       }
 
-      const currentPlayer = players[currentPlayerId]
+      switch (move) {
+        case MOVE_DECLINE: {
+          if (currentPlayer.canDecline) {
+            const payment =  currentPlayer.declineCard()
+            bank += payment;
 
-      if (isTaken) {
-        if (currentPlayer.money >= REFUSE_COST) {
-          // const updatedPlayer = changeMoney(currentPlayer, moneyStack)
-          // updatedPlayer.stack = addStack(currentCard, updatedPlayer.stack)
-          currentPlayer.money += moneyStack
-          currentPlayer.stack = addStack(currentCard, currentPlayer.stack)
-          moneyStack = 0
-
-          canTake = false
+            currentPlayer = getNextPlayer(currentPlayer);
+          }
+          break;
         }
-        // players[currentPlayerId] = updatedPlayer
-      } else {
-        currentPlayer.money -= REFUSE_COST
-        // players[currentPlayerId] = changeMoney(currentPlayer, -1)
-        moneyStack += REFUSE_COST
+        case MOVE_TAKE: {
+          currentPlayer.takeCard(card, bank);
+          bank = 0
 
-        currentPlayerId = getNextPlayer(currentPlayerId)
+          isCardFree = false
+          break;
+        }
       }
     }
+  }
 
-    const scores = Object.entries(players).map(([id, { money, stack }]) => {
-      return {
-        id,
-        score: money - getStackScore(stack)
-      }
-    }).sort((a, b) => a.score - b.score)
+  const scoredPlayers = players.map(player => ({ 
+    ...player.privateInfo
+  })).sort((a, b) => a.score - b.score)
+    .map((player, index) => ({ 
+      ...player,
+      place: index + 1
+    }));
 
-    yield {
-      players,
-      scores
-    }
+
+  return {
+    players: scoredPlayers
   }
 }
