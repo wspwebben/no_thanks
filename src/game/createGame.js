@@ -8,16 +8,20 @@ export default function * createGame (playersData) {
   const deck = createDeck(MIN_VALUE, MAX_VALUE, REMOVED_CARDS)
   const players = createPlayers(playersData);
   const getNextPlayer = createNextPlayer(players);
-  const getPublicInfo = () => players.map(player => player.publicInfo);
-  const getPrivateInfo = () => players.map(player => player.privateInfo);
 
   let [currentPlayer] = players;
   let bank = INITIAL_BANK;
 
-
-  yield {
-    players: getPrivateInfo(),
-  }
+  const getPublicInfo = () => players.map(player => player.publicInfo);
+  const getPrivateInfo = () => players.map(player => player.privateInfo);
+  const getGameState = (card) => ({
+    card,
+    bank,
+    cardsLeft: deck.length,
+    currentPlayer: currentPlayer.id,
+    players: getPublicInfo(),
+    _private: getPrivateInfo(),
+  })
 
   while (deck.length) {
     const card = deck.pop()
@@ -26,11 +30,7 @@ export default function * createGame (playersData) {
 
     while (isCardFree) {
       const move = yield {
-        card,
-        bank,
-        currentPlayer: currentPlayer.id,
-        players: getPublicInfo(),
-        _private: getPrivateInfo(),
+        ...getGameState(card)
       }
 
       switch (move) {
