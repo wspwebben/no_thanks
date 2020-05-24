@@ -7,13 +7,29 @@ const EVENTS = {
 };
 
 class Game {
-  constructor(io, socket, players) {
-    this.io = io;
-    this.socket = socket;
+  constructor(sockets, players) {
+    this.sockets = sockets;
     this.isPlaying = true;
 
+    this.onMessage = this.onMessage.bind(this);
+    this.bindEvents();
+
     this.game = createGame(players);
-    socket.on(EVENTS.GAME, this.onMessage.bind(this));
+    // initialize game
+    const { value: state } = this.game.next();
+    this.sendGameState(state);
+  }
+
+  bindEvents() {
+    this.sockets.forEach(socket => {
+      socket.on(EVENTS.GAME, this.onMessage);
+    })
+  }
+
+  unbindEvents() {
+    this.sockets.forEach(socket => {
+      socket.off(EVENTS.GAME, this.onMessage);
+    })
   }
 
   isCurrentPlayer(id) {
@@ -31,21 +47,22 @@ class Game {
     const { value: state, done } = this.game.next(move);
 
     if (done) {
-      this.showWinner(state.players);
+      this.sendPlayersScore(state.players);
       return;
     }
 
-    this.showMove(state);
+    this.sendGameState(state);
   }
 
-  showMove(state) {
-    console.log(state);
+  sendGameState(state) {
+    this.sockets.forEach(socket => {
+      socket.emit(EVENTS.GAME, state);
+    })
   }
 
-  showWinner(players) {
-    console.log(players);
+  sendPlayersScore(players) {
     this.isPlaying = false;
-    this.socket.off(EVENTS.GAME, this.onMessage);
+    this.unbindEvents();
   }
 }
 

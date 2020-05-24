@@ -1,7 +1,7 @@
 export default {
-  input: 'src/game.js',
+  input: 'src/index.js',
   output: {
-    file: 'dist/game.js',
+    file: 'dist/no_thanks.js',
     format: 'cjs',
   },
 };
