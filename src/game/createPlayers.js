@@ -18,8 +18,10 @@ export default function createPlayers (playersData) {
   const startingMoney = getMoneyCount(playersData.length)
 
 
-  return playersData.map(({ name }) => {
-    const { value: id } = idGenerator.next();
+  return playersData.map(({ name: id }, i) => {
+    // const { value: id } = idGenerator.next();
+    const name = String.fromCharCode(65 + i).repeat(5);
+
     return new Player(name, id, startingMoney);
   });
 }

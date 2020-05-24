@@ -10,6 +10,7 @@ class Game {
   constructor(sockets, players) {
     this.sockets = sockets;
     this.isPlaying = true;
+    this.currentPlayer = null;
 
     this.onMessage = this.onMessage.bind(this);
     this.bindEvents();
@@ -33,7 +34,7 @@ class Game {
   }
 
   isCurrentPlayer(id) {
-    return true;
+    return this.currentPlayer === id;
   }
 
   onMessage({ id, move }) {    
@@ -45,6 +46,8 @@ class Game {
 
   nextTurn(move) {
     const { value: state, done } = this.game.next(move);
+
+    this.currentPlayer = state.currentPlayer;
 
     if (done) {
       this.sendPlayersScore(state.players);
